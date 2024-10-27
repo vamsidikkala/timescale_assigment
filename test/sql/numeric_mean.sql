@@ -1,0 +1,180 @@
+-- 1. Smallint
+DROP TABLE IF EXISTS smallint_mean;
+CREATE TABLE smallint_mean (id SMALLINT);
+
+-- Insert 4 rows
+INSERT INTO smallint_mean VALUES 
+    (12345),  -- Random value
+    (32766),  -- 1 less than maximum SMALLINT value
+    (32767),  -- Maximum SMALLINT value
+    (32767);  -- Maximum SMALLINT value
+
+-- Select and order by id
+SELECT * FROM smallint_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM smallint_mean;
+
+
+-- 2. Integer
+DROP TABLE IF EXISTS integer_mean;
+CREATE TABLE integer_mean (id INTEGER);
+
+-- Insert 4 rows
+INSERT INTO integer_mean VALUES 
+    (123456789),  -- Random value
+    (2147483646),  -- 1 less than maximum INTEGER value
+    (2147483647),  -- Maximum INTEGER value
+    (2147483647);  -- Maximum INTEGER value
+
+-- Select and order by id
+SELECT * FROM integer_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM integer_mean;
+
+
+-- 3. Bigint
+DROP TABLE IF EXISTS bigint_mean;
+CREATE TABLE bigint_mean (id BIGINT);
+
+-- Insert 4 rows
+INSERT INTO bigint_mean VALUES 
+    (12345678901234),  -- Random value
+    (9223372036854775806),  -- 1 less than maximum BIGINT value
+    (9223372036854775807),  -- Maximum BIGINT value
+    (9223372036854775807);  -- Maximum BIGINT value
+
+-- Select and order by id
+SELECT * FROM bigint_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM bigint_mean;
+
+
+-- 4. Decimal
+DROP TABLE IF EXISTS decimal_mean;
+CREATE TABLE decimal_mean (id DECIMAL);
+
+-- Insert 4 rows
+INSERT INTO decimal_mean VALUES 
+    (12345.67),  -- Random value
+    (999999999999999.99),  -- 1 less than maximum DECIMAL value (up to 16, 17 or more precision can be set based on the implementation)
+    (1000000000000000.00),  -- Maximum DECIMAL value
+    (1000000000000000.00);  -- Maximum DECIMAL value
+
+-- Select and order by id
+SELECT * FROM decimal_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM decimal_mean;
+
+
+-- 5. Numeric
+DROP TABLE IF EXISTS numeric_mean;
+CREATE TABLE numeric_mean (id NUMERIC);
+
+-- Insert 4 rows
+INSERT INTO numeric_mean VALUES 
+    (12345.6789),  -- Random value
+    (999999999999999.99),  -- 1 less than maximum NUMERIC value
+    (1000000000000000.00),  -- Maximum NUMERIC value
+    (1000000000000000.00);  -- Maximum NUMERIC value
+
+-- Select and order by id
+SELECT * FROM numeric_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM numeric_mean;
+
+
+-- 6. Real
+DROP TABLE IF EXISTS real_mean;
+CREATE TABLE real_mean (id REAL);
+
+-- Insert 4 rows
+INSERT INTO real_mean VALUES 
+    (123.456),  -- Random value
+    (3.402823466E+38 - 0.00001),  -- 1 less than maximum REAL value
+    (3.402823466E+38),  -- Maximum REAL value
+    (3.402823466E+38);  -- Maximum REAL value
+
+-- Select and order by id
+SELECT * FROM real_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM real_mean;
+
+
+-- 7. Double Precision
+DROP TABLE IF EXISTS double_precision_mean;
+CREATE TABLE double_precision_mean (id DOUBLE PRECISION);
+
+-- Insert 4 rows
+INSERT INTO double_precision_mean VALUES 
+    (12345.678901234567),  -- Random value
+    (1.7976931348623157E+308 - 0.00001),  -- 1 less than maximum DOUBLE PRECISION value
+    (1.7976931348623157E+308),  -- Maximum DOUBLE PRECISION value
+    (1.7976931348623157E+308);  -- Maximum DOUBLE PRECISION value
+
+-- Select and order by id
+SELECT * FROM double_precision_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM double_precision_mean;
+
+
+-- 8. Smallserial
+DROP TABLE IF EXISTS smallserial_mean;
+CREATE TABLE smallserial_mean (id SMALLSERIAL);
+
+-- Insert 4 rows
+INSERT INTO smallserial_mean VALUES 
+    (12345),  -- Random value
+    (32766),  -- 1 less than maximum SMALLSERIAL value
+    (32767),  -- Maximum SMALLSERIAL value
+    (32767);  -- Maximum SMALLSERIAL value
+
+-- Select and order by id
+SELECT * FROM smallserial_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM smallserial_mean;
+
+
+-- 9. Serial
+DROP TABLE IF EXISTS serial_mean;
+CREATE TABLE serial_mean (id SERIAL);
+
+-- Insert 4 rows
+INSERT INTO serial_mean VALUES 
+    (123456),  -- Random value
+    (2147483646),  -- 1 less than maximum SERIAL value
+    (2147483647),  -- Maximum SERIAL value
+    (2147483647);  -- Maximum SERIAL value
+
+-- Select and order by id
+SELECT * FROM serial_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM serial_mean;
+
+
+-- 10. Bigserial
+DROP TABLE IF EXISTS bigserial_mean;
+CREATE TABLE bigserial_mean (id BIGSERIAL);
+
+-- Insert 4 rows
+INSERT INTO bigserial_mean VALUES 
+    (12345678901234),  -- Random value
+    (9223372036854775806),  -- 1 less than maximum BIGSERIAL value
+    (9223372036854775807),  -- Maximum BIGSERIAL value
+    (9223372036854775807);  -- Maximum BIGSERIAL value
+
+-- Select and order by id
+SELECT * FROM bigserial_mean ORDER BY id;
+
+-- Median calculation
+SELECT median(id) AS median_value FROM bigserial_mean;
+
+
