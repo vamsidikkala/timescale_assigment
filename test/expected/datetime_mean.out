@@ -1,0 +1,156 @@
+-- timestamp without time zone
+DROP TABLE IF EXISTS timestamp_without_tz_mean;
+NOTICE:  table "timestamp_without_tz_mean" does not exist, skipping
+CREATE TABLE timestamp_without_tz_mean (
+    id TIMESTAMP WITHOUT TIME ZONE PRIMARY KEY
+);
+INSERT INTO timestamp_without_tz_mean (id) VALUES 
+    ('2023-10-27 14:30:00'),               -- Random value
+    ('2038-01-19 03:14:07'::timestamp - INTERVAL '10 seconds'),  -- Maximum value - 10
+    ('2038-01-19 03:14:07'::timestamp - INTERVAL '5 seconds'),   -- Maximum value - 5
+    ('2038-01-19 03:14:07');                -- Maximum value
+SELECT * FROM timestamp_without_tz_mean ORDER BY id;
+            id            
+--------------------------
+ Fri Oct 27 14:30:00 2023
+ Tue Jan 19 03:13:57 2038
+ Tue Jan 19 03:14:02 2038
+ Tue Jan 19 03:14:07 2038
+(4 rows)
+
+SELECT median(id) FROM timestamp_without_tz_mean;
+           median           
+----------------------------
+ Tue Jan 19 03:13:59.5 2038
+(1 row)
+
+-- timestamp with time zone
+DROP TABLE IF EXISTS timestamp_with_tz_mean;
+NOTICE:  table "timestamp_with_tz_mean" does not exist, skipping
+CREATE TABLE timestamp_with_tz_mean (
+    id TIMESTAMP WITH TIME ZONE PRIMARY KEY
+);
+INSERT INTO timestamp_with_tz_mean (id) VALUES 
+    ('2023-10-27 14:30:00-05'),             -- Random value
+    ('2038-01-19 03:14:07-05'::timestamp - INTERVAL '10 seconds'),   -- Maximum value - 10
+    ('2038-01-19 03:14:07-05'::timestamp - INTERVAL '5 seconds'),    -- Maximum value - 5
+    ('2038-01-19 03:14:07-05');              -- Maximum value
+SELECT * FROM timestamp_with_tz_mean ORDER BY id;
+              id              
+------------------------------
+ Fri Oct 27 12:30:00 2023 PDT
+ Tue Jan 19 00:14:07 2038 PST
+ Tue Jan 19 03:13:57 2038 PST
+ Tue Jan 19 03:14:02 2038 PST
+(4 rows)
+
+SELECT median(id) FROM timestamp_with_tz_mean;
+            median            
+------------------------------
+ Tue Jan 19 01:44:02 2038 PST
+(1 row)
+
+-- date
+DROP TABLE IF EXISTS date_mean;
+NOTICE:  table "date_mean" does not exist, skipping
+CREATE TABLE date_mean (
+    id DATE PRIMARY KEY
+);
+INSERT INTO date_mean (id) VALUES 
+    ('2023-10-15'),                -- Random value
+    ('2023-10-10'),                -- Random value
+    ('2023-10-20'),                -- Random value
+    ('2023-10-24');                -- Random value
+SELECT * FROM date_mean ORDER BY id;
+     id     
+------------
+ 10-10-2023
+ 10-15-2023
+ 10-20-2023
+ 10-24-2023
+(4 rows)
+
+SELECT median(id) FROM date_mean;
+   median   
+------------
+ 10-17-2023
+(1 row)
+
+-- time without time zone
+DROP TABLE IF EXISTS time_without_tz_mean;
+NOTICE:  table "time_without_tz_mean" does not exist, skipping
+CREATE TABLE time_without_tz_mean (
+    id TIME WITHOUT TIME ZONE PRIMARY KEY
+);
+INSERT INTO time_without_tz_mean (id) VALUES 
+    ('14:30:00'),                -- Random value
+    ('23:59:59'::time - INTERVAL '10 seconds'),  -- Maximum value - 10
+    ('23:59:59'::time - INTERVAL '5 seconds'),    -- Maximum value - 5
+    ('23:59:59');                -- Maximum value
+SELECT * FROM time_without_tz_mean ORDER BY id;
+    id    
+----------
+ 14:30:00
+ 23:59:49
+ 23:59:54
+ 23:59:59
+(4 rows)
+
+SELECT median(id) FROM time_without_tz_mean;
+   median   
+------------
+ 23:59:51.5
+(1 row)
+
+-- time with time zone
+DROP TABLE IF EXISTS time_with_tz_mean;
+NOTICE:  table "time_with_tz_mean" does not exist, skipping
+CREATE TABLE time_with_tz_mean (
+    id TIME WITH TIME ZONE PRIMARY KEY
+);
+INSERT INTO time_with_tz_mean (id) VALUES 
+    ('14:30:00-05'),             -- Random value
+    ('23:59:59-05'::time - INTERVAL '10 seconds'), -- Maximum value - 10
+    ('23:59:59-05'::time - INTERVAL '5 seconds'),   -- Maximum value - 5
+    ('23:59:59-05');             -- Maximum value
+SELECT * FROM time_with_tz_mean ORDER BY id;
+     id      
+-------------
+ 14:30:00-05
+ 23:59:59-05
+ 23:59:49-07
+ 23:59:54-07
+(4 rows)
+
+SELECT median(id) FROM time_with_tz_mean;
+      median       
+-------------------
+ 23:59:59.00002-05
+(1 row)
+
+-- interval
+DROP TABLE IF EXISTS interval_mean;
+NOTICE:  table "interval_mean" does not exist, skipping
+CREATE TABLE interval_mean (
+    id INTERVAL PRIMARY KEY
+);
+INSERT INTO interval_mean (id) VALUES 
+    ('1 day'),                    -- Random value
+    ('2147483647 days'::interval - INTERVAL '10 microseconds'),  -- Maximum value - 10
+    ('2147483647 days'::interval - INTERVAL '5 microseconds'),   -- Maximum value - 5
+    ('2147483647 days');          -- Maximum value
+SELECT * FROM interval_mean ORDER BY id;
+                id                
+----------------------------------
+ @ 1 day
+ @ 2147483647 days -0.00001 secs
+ @ 2147483647 days -0.000005 secs
+ @ 2147483647 days
+(4 rows)
+
+SELECT median(id) FROM interval_mean;
+                      median                       
+---------------------------------------------------
+ @ 2147483646 days 23 hours 59 mins 59.999993 secs
+(1 row)
+

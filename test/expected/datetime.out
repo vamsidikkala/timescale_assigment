@@ -1,0 +1,301 @@
+-- TIMESTAMP Data Types in PostgreSQL
+-- 1. timestamp without time zone
+DROP TABLE IF EXISTS timestamp_without_tz_table_odd;
+NOTICE:  table "timestamp_without_tz_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS timestamp_without_tz_table_even;
+NOTICE:  table "timestamp_without_tz_table_even" does not exist, skipping
+CREATE TABLE timestamp_without_tz_table_odd (id timestamp without time zone);
+CREATE TABLE timestamp_without_tz_table_even (id timestamp without time zone);
+-- Insert 5 values into the odd table
+INSERT INTO timestamp_without_tz_table_odd VALUES ('2024-10-26 10:00:00');
+INSERT INTO timestamp_without_tz_table_odd VALUES ('2024-10-26 11:00:00');
+INSERT INTO timestamp_without_tz_table_odd VALUES ('2024-10-26 12:00:00');
+INSERT INTO timestamp_without_tz_table_odd VALUES ('2024-10-26 13:00:00');
+INSERT INTO timestamp_without_tz_table_odd VALUES ('2024-10-26 14:00:00');
+-- Insert 4 values into the even table
+INSERT INTO timestamp_without_tz_table_even VALUES ('2024-10-26 15:00:00');
+INSERT INTO timestamp_without_tz_table_even VALUES ('2024-10-26 16:00:00');
+INSERT INTO timestamp_without_tz_table_even VALUES ('2024-10-26 17:00:00');
+INSERT INTO timestamp_without_tz_table_even VALUES ('2024-10-26 18:00:00');
+-- Order by statement
+SELECT * FROM timestamp_without_tz_table_odd ORDER BY id;
+            id            
+--------------------------
+ Sat Oct 26 10:00:00 2024
+ Sat Oct 26 11:00:00 2024
+ Sat Oct 26 12:00:00 2024
+ Sat Oct 26 13:00:00 2024
+ Sat Oct 26 14:00:00 2024
+(5 rows)
+
+SELECT median(id) AS median_value FROM timestamp_without_tz_table_odd;
+       median_value       
+--------------------------
+ Sat Oct 26 12:00:00 2024
+(1 row)
+
+SELECT * FROM timestamp_without_tz_table_even ORDER BY id;
+            id            
+--------------------------
+ Sat Oct 26 15:00:00 2024
+ Sat Oct 26 16:00:00 2024
+ Sat Oct 26 17:00:00 2024
+ Sat Oct 26 18:00:00 2024
+(4 rows)
+
+SELECT median(id) AS median_value FROM timestamp_without_tz_table_even;
+       median_value       
+--------------------------
+ Sat Oct 26 16:30:00 2024
+(1 row)
+
+-- 2. timestamp with time zone
+DROP TABLE IF EXISTS timestamp_with_tz_table_odd;
+NOTICE:  table "timestamp_with_tz_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS timestamp_with_tz_table_even;
+NOTICE:  table "timestamp_with_tz_table_even" does not exist, skipping
+CREATE TABLE timestamp_with_tz_table_odd (id timestamp with time zone);
+CREATE TABLE timestamp_with_tz_table_even (id timestamp with time zone);
+-- Insert 5 values into the odd table
+INSERT INTO timestamp_with_tz_table_odd VALUES ('2024-10-26 10:00:00+00');
+INSERT INTO timestamp_with_tz_table_odd VALUES ('2024-10-26 11:00:00+00');
+INSERT INTO timestamp_with_tz_table_odd VALUES ('2024-10-26 12:00:00+00');
+INSERT INTO timestamp_with_tz_table_odd VALUES ('2024-10-26 13:00:00+00');
+INSERT INTO timestamp_with_tz_table_odd VALUES ('2024-10-26 14:00:00+00');
+-- Insert 4 values into the even table
+INSERT INTO timestamp_with_tz_table_even VALUES ('2024-10-26 15:00:00+00');
+INSERT INTO timestamp_with_tz_table_even VALUES ('2024-10-26 16:00:00+00');
+INSERT INTO timestamp_with_tz_table_even VALUES ('2024-10-26 17:00:00+00');
+INSERT INTO timestamp_with_tz_table_even VALUES ('2024-10-26 18:00:00+00');
+-- Order by statement
+SELECT * FROM timestamp_with_tz_table_odd ORDER BY id;
+              id              
+------------------------------
+ Sat Oct 26 03:00:00 2024 PDT
+ Sat Oct 26 04:00:00 2024 PDT
+ Sat Oct 26 05:00:00 2024 PDT
+ Sat Oct 26 06:00:00 2024 PDT
+ Sat Oct 26 07:00:00 2024 PDT
+(5 rows)
+
+SELECT median(id) AS median_value FROM timestamp_with_tz_table_odd;
+         median_value         
+------------------------------
+ Sat Oct 26 05:00:00 2024 PDT
+(1 row)
+
+SELECT * FROM timestamp_with_tz_table_even ORDER BY id;
+              id              
+------------------------------
+ Sat Oct 26 08:00:00 2024 PDT
+ Sat Oct 26 09:00:00 2024 PDT
+ Sat Oct 26 10:00:00 2024 PDT
+ Sat Oct 26 11:00:00 2024 PDT
+(4 rows)
+
+SELECT median(id) AS median_value FROM timestamp_with_tz_table_even;
+         median_value         
+------------------------------
+ Sat Oct 26 09:30:00 2024 PDT
+(1 row)
+
+-- 3. date
+DROP TABLE IF EXISTS date_table_odd;
+NOTICE:  table "date_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS date_table_even;
+NOTICE:  table "date_table_even" does not exist, skipping
+CREATE TABLE date_table_odd (id date);
+CREATE TABLE date_table_even (id date);
+-- Insert 5 values into the odd table
+INSERT INTO date_table_odd VALUES ('2024-10-26');
+INSERT INTO date_table_odd VALUES ('2024-10-27');
+INSERT INTO date_table_odd VALUES ('2024-10-28');
+INSERT INTO date_table_odd VALUES ('2024-10-29');
+INSERT INTO date_table_odd VALUES ('2024-10-30');
+-- Insert 4 values into the even table
+INSERT INTO date_table_even VALUES ('2024-10-31');
+INSERT INTO date_table_even VALUES ('2024-11-01');
+INSERT INTO date_table_even VALUES ('2024-11-02');
+INSERT INTO date_table_even VALUES ('2024-11-03');
+-- Order by statement
+SELECT * FROM date_table_odd ORDER BY id;
+     id     
+------------
+ 10-26-2024
+ 10-27-2024
+ 10-28-2024
+ 10-29-2024
+ 10-30-2024
+(5 rows)
+
+SELECT median(id) AS median_value FROM date_table_odd;
+ median_value 
+--------------
+ 10-28-2024
+(1 row)
+
+SELECT * FROM date_table_even ORDER BY id;
+     id     
+------------
+ 10-31-2024
+ 11-01-2024
+ 11-02-2024
+ 11-03-2024
+(4 rows)
+
+SELECT median(id) AS median_value FROM date_table_even;
+ median_value 
+--------------
+ 11-01-2024
+(1 row)
+
+-- 4. time without time zone
+DROP TABLE IF EXISTS time_without_tz_table_odd;
+NOTICE:  table "time_without_tz_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS time_without_tz_table_even;
+NOTICE:  table "time_without_tz_table_even" does not exist, skipping
+CREATE TABLE time_without_tz_table_odd (id time without time zone);
+CREATE TABLE time_without_tz_table_even (id time without time zone);
+-- Insert 5 values into the odd table
+INSERT INTO time_without_tz_table_odd VALUES ('10:00:00');
+INSERT INTO time_without_tz_table_odd VALUES ('11:00:00');
+INSERT INTO time_without_tz_table_odd VALUES ('12:00:00');
+INSERT INTO time_without_tz_table_odd VALUES ('13:00:00');
+INSERT INTO time_without_tz_table_odd VALUES ('14:00:00');
+-- Insert 4 values into the even table
+INSERT INTO time_without_tz_table_even VALUES ('15:00:00');
+INSERT INTO time_without_tz_table_even VALUES ('16:00:00');
+INSERT INTO time_without_tz_table_even VALUES ('17:00:00');
+INSERT INTO time_without_tz_table_even VALUES ('18:00:00');
+-- Order by statement
+SELECT * FROM time_without_tz_table_odd ORDER BY id;
+    id    
+----------
+ 10:00:00
+ 11:00:00
+ 12:00:00
+ 13:00:00
+ 14:00:00
+(5 rows)
+
+SELECT median(id) AS median_value FROM time_without_tz_table_odd;
+ median_value 
+--------------
+ 12:00:00
+(1 row)
+
+SELECT * FROM time_without_tz_table_even ORDER BY id;
+    id    
+----------
+ 15:00:00
+ 16:00:00
+ 17:00:00
+ 18:00:00
+(4 rows)
+
+SELECT median(id) AS median_value FROM time_without_tz_table_even;
+ median_value 
+--------------
+ 16:30:00
+(1 row)
+
+-- 5. time with time zone
+DROP TABLE IF EXISTS time_with_tz_table_odd;
+NOTICE:  table "time_with_tz_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS time_with_tz_table_even;
+NOTICE:  table "time_with_tz_table_even" does not exist, skipping
+CREATE TABLE time_with_tz_table_odd (id time with time zone);
+CREATE TABLE time_with_tz_table_even (id time with time zone);
+-- Insert 5 values into the odd table
+INSERT INTO time_with_tz_table_odd VALUES ('10:00:00+00');
+INSERT INTO time_with_tz_table_odd VALUES ('11:00:00+00');
+INSERT INTO time_with_tz_table_odd VALUES ('12:00:00+00');
+INSERT INTO time_with_tz_table_odd VALUES ('13:00:00+00');
+INSERT INTO time_with_tz_table_odd VALUES ('14:00:00+00');
+-- Insert 4 values into the even table
+INSERT INTO time_with_tz_table_even VALUES ('15:00:00+00');
+INSERT INTO time_with_tz_table_even VALUES ('16:00:00+00');
+INSERT INTO time_with_tz_table_even VALUES ('17:00:00+00');
+INSERT INTO time_with_tz_table_even VALUES ('18:00:00+00');
+-- Order by statement
+SELECT * FROM time_with_tz_table_odd ORDER BY id;
+     id      
+-------------
+ 10:00:00+00
+ 11:00:00+00
+ 12:00:00+00
+ 13:00:00+00
+ 14:00:00+00
+(5 rows)
+
+SELECT median(id) AS median_value FROM time_with_tz_table_odd;
+ median_value 
+--------------
+ 12:00:00+00
+(1 row)
+
+SELECT * FROM time_with_tz_table_even ORDER BY id;
+     id      
+-------------
+ 15:00:00+00
+ 16:00:00+00
+ 17:00:00+00
+ 18:00:00+00
+(4 rows)
+
+SELECT median(id) AS median_value FROM time_with_tz_table_even;
+   median_value    
+-------------------
+ 16:00:00.00002+00
+(1 row)
+
+-- 6. interval
+DROP TABLE IF EXISTS interval_table_odd;
+NOTICE:  table "interval_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS interval_table_even;
+NOTICE:  table "interval_table_even" does not exist, skipping
+CREATE TABLE interval_table_odd (id interval);
+CREATE TABLE interval_table_even (id interval);
+-- Insert 5 values into the odd table
+INSERT INTO interval_table_odd VALUES ('1 day 2 hours');
+INSERT INTO interval_table_odd VALUES ('2 days 3 hours');
+INSERT INTO interval_table_odd VALUES ('3 days 4 hours');
+INSERT INTO interval_table_odd VALUES ('4 days 5 hours');
+INSERT INTO interval_table_odd VALUES ('5 days 6 hours');
+-- Insert 4 values into the even table
+INSERT INTO interval_table_even VALUES ('1 day 2 hours');
+INSERT INTO interval_table_even VALUES ('2 days 3 hours');
+INSERT INTO interval_table_even VALUES ('3 days 4 hours');
+INSERT INTO interval_table_even VALUES ('4 days 5 hours');
+-- Order by statement
+SELECT * FROM interval_table_odd ORDER BY id;
+        id        
+------------------
+ @ 1 day 2 hours
+ @ 2 days 3 hours
+ @ 3 days 4 hours
+ @ 4 days 5 hours
+ @ 5 days 6 hours
+(5 rows)
+
+SELECT median(id) AS median_value FROM interval_table_odd;
+   median_value   
+------------------
+ @ 3 days 4 hours
+(1 row)
+
+SELECT * FROM interval_table_even ORDER BY id;
+        id        
+------------------
+ @ 1 day 2 hours
+ @ 2 days 3 hours
+ @ 3 days 4 hours
+ @ 4 days 5 hours
+(4 rows)
+
+SELECT median(id) AS median_value FROM interval_table_even;
+       median_value        
+---------------------------
+ @ 2 days 15 hours 30 mins
+(1 row)
+

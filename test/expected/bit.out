@@ -1,0 +1,101 @@
+-- BIT and BIT VARYING Data Types in PostgreSQL
+-- 1. BIT
+DROP TABLE IF EXISTS bit_table_odd;
+NOTICE:  table "bit_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS bit_table_even;
+NOTICE:  table "bit_table_even" does not exist, skipping
+CREATE TABLE bit_table_odd (id BIT(3));
+CREATE TABLE bit_table_even (id BIT(3));
+-- Insert 5 values into the odd table
+INSERT INTO bit_table_odd VALUES (B'101');
+INSERT INTO bit_table_odd VALUES (B'110');
+INSERT INTO bit_table_odd VALUES (B'111');
+INSERT INTO bit_table_odd VALUES (B'100');
+INSERT INTO bit_table_odd VALUES (B'001');
+-- Insert 4 values into the even table
+INSERT INTO bit_table_even VALUES (B'101');
+INSERT INTO bit_table_even VALUES (B'110');
+INSERT INTO bit_table_even VALUES (B'001');
+INSERT INTO bit_table_even VALUES (B'110');
+-- Order by statement
+SELECT * FROM bit_table_odd ORDER BY id;
+ id  
+-----
+ 001
+ 100
+ 101
+ 110
+ 111
+(5 rows)
+
+SELECT median(id) AS median_value FROM bit_table_odd;
+ median_value 
+--------------
+ 101
+(1 row)
+
+SELECT * FROM bit_table_even ORDER BY id;
+ id  
+-----
+ 001
+ 101
+ 110
+ 110
+(4 rows)
+
+SELECT median(id) AS median_value FROM bit_table_even;
+ median_value 
+--------------
+ 101
+(1 row)
+
+-- 2. BIT VARYING
+DROP TABLE IF EXISTS bit_varying_table_odd;
+NOTICE:  table "bit_varying_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS bit_varying_table_even;
+NOTICE:  table "bit_varying_table_even" does not exist, skipping
+CREATE TABLE bit_varying_table_odd (id BIT VARYING);
+CREATE TABLE bit_varying_table_even (id BIT VARYING);
+-- Insert 5 values into the odd table
+INSERT INTO bit_varying_table_odd VALUES (B'10101');
+INSERT INTO bit_varying_table_odd VALUES (B'11010');
+INSERT INTO bit_varying_table_odd VALUES (B'11111');
+INSERT INTO bit_varying_table_odd VALUES (B'10001');
+INSERT INTO bit_varying_table_odd VALUES (B'00100');
+-- Insert 4 values into the even table
+INSERT INTO bit_varying_table_even VALUES (B'010101');
+INSERT INTO bit_varying_table_even VALUES (B'110000');
+INSERT INTO bit_varying_table_even VALUES (B'000101');
+INSERT INTO bit_varying_table_even VALUES (B'111010');
+-- Order by statement
+SELECT * FROM bit_varying_table_odd ORDER BY id;
+  id   
+-------
+ 00100
+ 10001
+ 10101
+ 11010
+ 11111
+(5 rows)
+
+SELECT median(id) AS median_value FROM bit_varying_table_odd;
+ median_value 
+--------------
+ 10101
+(1 row)
+
+SELECT * FROM bit_varying_table_even ORDER BY id;
+   id   
+--------
+ 000101
+ 010101
+ 110000
+ 111010
+(4 rows)
+
+SELECT median(id) AS median_value FROM bit_varying_table_even;
+ median_value 
+--------------
+ 010101
+(1 row)
+

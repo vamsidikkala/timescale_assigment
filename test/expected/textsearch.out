@@ -1,0 +1,101 @@
+-- TSVECTOR and TSQUERY Data Types in PostgreSQL
+-- 1. TSVECTOR
+DROP TABLE IF EXISTS tsvector_table_odd;
+NOTICE:  table "tsvector_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS tsvector_table_even;
+NOTICE:  table "tsvector_table_even" does not exist, skipping
+CREATE TABLE tsvector_table_odd (id TSVECTOR);
+CREATE TABLE tsvector_table_even (id TSVECTOR);
+-- Insert 5 values into the odd table
+INSERT INTO tsvector_table_odd VALUES (to_tsvector('PostgreSQL is a powerful, open source object-relational database system'));
+INSERT INTO tsvector_table_odd VALUES (to_tsvector('The quick brown fox jumps over the lazy dog'));
+INSERT INTO tsvector_table_odd VALUES (to_tsvector('Data types and their operations'));
+INSERT INTO tsvector_table_odd VALUES (to_tsvector('Full-text search is useful'));
+INSERT INTO tsvector_table_odd VALUES (to_tsvector('Natural language processing in PostgreSQL'));
+-- Insert 4 values into the even table
+INSERT INTO tsvector_table_even VALUES (to_tsvector('SQL scripts can be generated easily'));
+INSERT INTO tsvector_table_even VALUES (to_tsvector('Indexes improve query performance'));
+INSERT INTO tsvector_table_even VALUES (to_tsvector('Use tsvector for text searching'));
+INSERT INTO tsvector_table_even VALUES (to_tsvector('PostgreSQL supports various data types'));
+-- Order by statement
+SELECT * FROM tsvector_table_odd ORDER BY id;
+                                                    id                                                    
+----------------------------------------------------------------------------------------------------------
+ 'data':1 'oper':5 'type':2
+ 'languag':2 'natur':1 'postgresql':5 'process':3
+ 'full':2 'full-text':1 'search':4 'text':3 'use':6
+ 'brown':3 'dog':9 'fox':4 'jump':5 'lazi':8 'quick':2
+ 'databas':10 'object':8 'object-rel':7 'open':5 'postgresql':1 'power':4 'relat':9 'sourc':6 'system':11
+(5 rows)
+
+SELECT median(id) AS median_value FROM tsvector_table_odd;
+                    median_value                    
+----------------------------------------------------
+ 'full':2 'full-text':1 'search':4 'text':3 'use':6
+(1 row)
+
+SELECT * FROM tsvector_table_even ORDER BY id;
+                            id                            
+----------------------------------------------------------
+ 'search':5 'text':4 'tsvector':2 'use':1
+ 'easili':6 'generat':5 'script':2 'sql':1
+ 'improv':2 'index':1 'perform':4 'queri':3
+ 'data':4 'postgresql':1 'support':2 'type':5 'various':3
+(4 rows)
+
+SELECT median(id) AS median_value FROM tsvector_table_even;
+               median_value                
+-------------------------------------------
+ 'easili':6 'generat':5 'script':2 'sql':1
+(1 row)
+
+-- 2. TSQUERY
+DROP TABLE IF EXISTS tsquery_table_odd;
+NOTICE:  table "tsquery_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS tsquery_table_even;
+NOTICE:  table "tsquery_table_even" does not exist, skipping
+CREATE TABLE tsquery_table_odd (id TSQUERY);
+CREATE TABLE tsquery_table_even (id TSQUERY);
+-- Insert 5 values into the odd table
+INSERT INTO tsquery_table_odd VALUES (to_tsquery('PostgreSQL & powerful'));
+INSERT INTO tsquery_table_odd VALUES (to_tsquery('quick | brown | fox'));
+INSERT INTO tsquery_table_odd VALUES (to_tsquery('data & types'));
+INSERT INTO tsquery_table_odd VALUES (to_tsquery('fulltext & search'));
+INSERT INTO tsquery_table_odd VALUES (to_tsquery('natural & language & processing'));
+-- Insert 4 values into the even table
+INSERT INTO tsquery_table_even VALUES (to_tsquery('SQL & scripts'));
+INSERT INTO tsquery_table_even VALUES (to_tsquery('indexes | performance'));
+INSERT INTO tsquery_table_even VALUES (to_tsquery('text & searching'));
+INSERT INTO tsquery_table_even VALUES (to_tsquery('supports & various & data'));
+-- Order by statement
+SELECT * FROM tsquery_table_odd ORDER BY id;
+               id                
+---------------------------------
+ 'data' & 'type'
+ 'fulltext' & 'search'
+ 'postgresql' & 'power'
+ 'quick' | 'brown' | 'fox'
+ 'natur' & 'languag' & 'process'
+(5 rows)
+
+SELECT median(id) AS median_value FROM tsquery_table_odd;
+      median_value      
+------------------------
+ 'postgresql' & 'power'
+(1 row)
+
+SELECT * FROM tsquery_table_even ORDER BY id;
+               id               
+--------------------------------
+ 'sql' & 'script'
+ 'text' & 'search'
+ 'index' | 'perform'
+ 'support' & 'various' & 'data'
+(4 rows)
+
+SELECT median(id) AS median_value FROM tsquery_table_even;
+   median_value    
+-------------------
+ 'text' & 'search'
+(1 row)
+
