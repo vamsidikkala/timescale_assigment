@@ -1,0 +1,26 @@
+-- real
+DROP TABLE IF EXISTS real_large_data;
+NOTICE:  table "real_large_data" does not exist, skipping
+CREATE TABLE real_large_data (
+    id REAL
+);
+DO $$
+DECLARE
+    i REAL := 1;
+BEGIN
+    FOR i IN 1..1500000 LOOP
+        INSERT INTO real_large_data(id) VALUES (i);
+    END LOOP;
+END $$;
+SELECT COUNT(id) FROM real_large_data;
+  count  
+---------
+ 1500000
+(1 row)
+
+SELECT median(id) FROM real_large_data;
+  median  
+----------
+ 750000.5
+(1 row)
+
