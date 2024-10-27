@@ -3,8 +3,12 @@ EXTENSION = median
 DATA = median--1.0.sql
 DOCS = README.md
 EXTRA_CLEAN = *~ median.tar.gz
-REGRESS := median
+REGRESS := median array bit boolean byte char datetime enum inet monetary \
+           numeric textsearch uuid numeric_boundary bit_boundary byte_boundary \
+           char_boundary inet_boundary monetary_boundary uuid_boundary \
+           numeric_mean datetime_mean money_mean    
 PG_USER = postgres
+PGPORT=5433
 REGRESS_OPTS := \
 	--load-extension=$(EXTENSION) \
 	--user=$(PG_USER) \
@@ -15,11 +19,10 @@ REGRESS_OPTS := \
 SRCS = median.c
 OBJS = $(patsubst %.c,%.o,$(SRCS))
 TARBALL = timescaledb-coding-assignment.tar.gz
-
+#debug
+PG_CFLAGS += -O0
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
-#new line for debug
-CFLAGS += -g
 include $(PGXS)
 
 .PHONY: tarball
