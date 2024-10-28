@@ -32,10 +32,10 @@ INSERT INTO lsn_table_even (value_column) VALUES
 (pg_lsn('0/16B6D75')),
 (pg_lsn('0/16B6D76'));  -- Continue to add even number of rows
 
--- Calculate the median for lsn_table_even
-SELECT median(value_column) FROM lsn_table_even;
-
 -- Select data ordered by id for lsn_table_even
 SELECT * FROM lsn_table_even ORDER BY id;
+
+-- Calculate the median for lsn_table_even
+SELECT median(value_column) FROM lsn_table_even;
 
 
