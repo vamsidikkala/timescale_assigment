@@ -68,6 +68,9 @@ Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `
 - **datatype.sql**  
   Tests include all supported data types. For each data type, we create two tables, `datatype_table_odd` (odd number of elements) and `datatype_table_even` (even number of elements), and run `SELECT MEDIAN(col)` on each table to simulate median behavior.
 
+- **geometric.sql**  
+  Test unsupported datatype POINT and LINE with MEDIAN().
+  
 - **datatype_large.sql**  
   Tests large datasets, ensuring `tuplesort*` API switches to external tape sort. We insert large data sets (>1 million rows) and query for the median.
 
