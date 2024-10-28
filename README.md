@@ -85,8 +85,8 @@ tests should pass as is. Feel free to add additional tests.
                                      MEDIAN
                                      -------
                                        2 (NOT 2.0)
-                           
-    numeric_mean.sql: The purpose of this test case is to see whether SERVER performs implcit conversion of the
+    
+     numeric_mean.sql: The purpose of this test case is to see whether SERVER performs implcit conversion of the
                       result to FLOAT data type, when even number of elements present in the result set and all 
                       elements are equal. In this test, elements present at n/2 and n/2 + 1 position are equal, server
                       should implcitly convert the result to FLOAT data type for data types
