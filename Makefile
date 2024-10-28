@@ -4,9 +4,12 @@ DATA = median--1.0.sql
 DOCS = README.md
 EXTRA_CLEAN = *~ median.tar.gz
 REGRESS := median array bit boolean byte char datetime enum inet monetary \
-           numeric textsearch uuid numeric_boundary bit_boundary byte_boundary \
-           char_boundary inet_boundary monetary_boundary uuid_boundary \
-           numeric_mean datetime_mean money_mean    
+           numeric textsearch uuid numeric_boundary \
+           numeric_mean datetime_mean int_large bigint_large \
+           serial_large big_serial_large decimal_large numeric_large \
+           real_large double_large geometric composite intrange domain oid \
+           lsn numeric_empty numeric_null 
+             
 PG_USER = postgres
 PGPORT=5433
 REGRESS_OPTS := \
