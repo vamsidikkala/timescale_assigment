@@ -75,7 +75,7 @@ Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `
   Tests large datasets, ensuring `tuplesort*` API switches to external tape sort. We insert large data sets (>1 million rows) and query for the median.
 
 - **numeric_noimplicit.sql**  
-  Tests whether the server typecasts the result to `FLOAT` when there are even elements and all are equal. Here, elements at `n/2` and `n/2 + 1` are equal, so no implicit conversion should occur.
+  Tests whether the server typecasts the result to `FLOAT` when there are even number of elements in the result and all are equal. Here, elements at `n/2` and `n/2 + 1` are equal, so no implicit conversion should occur.
     - **Example**:
       ```sql
       CREATE TABLE TEST (COL1 INT);
@@ -85,7 +85,7 @@ Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `
       ```
 
 - **numeric_mean.sql**  
-  Tests if the server performs implicit conversion to `FLOAT` for `INT`, `SMALLINT`, `BIGINT`, `SERIAL`, `SMALLSERIAL`, and `BIGSERIAL` data types when there are even elements, and elements at `n/2` and `n/2 + 1` are equal.
+  Tests if the server performs implicit conversion to `FLOAT` for `INT`, `SMALLINT`, `BIGINT`, `SERIAL`, `SMALLSERIAL`, and `BIGSERIAL` data types when there are even number of elements in result set, and elements at `n/2` and `n/2 + 1` aree not equal.
     - **Example**:
       ```sql
       CREATE TABLE TEST (COL1 INT);
