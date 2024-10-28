@@ -39,74 +39,68 @@ tests should pass as is. Feel free to add additional tests.
 
 ## Design:
 
-### Calculating the median:
-1) If Result set contains odd number of elements in the sorted result set, n/2 element is the median
-2) else,
-    i) Datatypes that support calculation of mean
-        -> if both n/2 and n/2 + 1 elements are same, return n/2 element (no implicit conversion for NUMERIC data types)
-        -> if both n/2 and n/2 + 1 are different, return mean of n/2 and n/2 + 1 elements. (Implicit conversion for NUMERIC data types)
-   ii) Data types that doesn't support mean, return first middle element as mean.
+### Calculating the Median:
+1. If the result set contains an odd number of elements, the median is the element at position `n/2` in the sorted set.
+2. If the result set contains an even number of elements:
+    - **Data types that support mean calculation**  
+        - If the elements at positions `n/2` and `n/2 + 1` are same, return the element at `n/2` (no implicit conversion for NUMERIC data types).
+        - If the elements are not equal, return the mean of the `n/2` and `n/2 + 1` elements (implicit conversion for NUMERIC data types).
+    - **Data types that do not support mean calculation**  
+        - Return the first middle element as the median.
 
 ### Algorithm:
-    tuplesort_* interface is used for sorting the data. tuplesort switches to external tape sort when result-set
-    size is greater than work_mem parameter.
-    After sorting the data, we follow steps mentioned in Calculating the median section for finding the median.
+The `tuplesort_*` interface is used for sorting the data, switching to an external tape sort when the result set size exceeds the `work_mem` parameter.\
+After sorting, we use the steps in the "Calculating the Median" section to find the median.
 
-### Data type Support:
-#### Supported data types
-      All datatypes which support ORDER BY functionality are supported.
-#### Unsupported data types
-     XML, JSON, Geometric Types.
+### Data Type Support:
+#### Supported Data Types
+- All data types that support the `ORDER BY` functionality.
+- For DOMAIN and Object Identifier data types, we are not actually looking into the actual data type \
+  they are pointing to. Instead we return first middle element in the even number result set.
+
+#### Unsupported Data Types
+- XML, JSON, and Geometric types.
 
 ### Implicit Conversion:
-   Implcit conversion to the FLOAT data type will be performed for the data types SMALL, INT, BIGINT, SMALL SERIAL, 
-  SERIAL, BIGSERIAL datatypes, when result set contains even number of elements and n/2 and n/2 + 1 elements are not 
-  equal. If both n/2 and n/2+1 elements are same, then implicit conversion shouldn't happen.
-
+Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `BIGINT`, `SMALLSERIAL`, `SERIAL`, and `BIGSERIAL` when the result set contains an even number of elements and the elements at `n/2` and `n/2 + 1` are not equal. If both elements are the same, no implicit conversion should occur.
 
 ### Testing:
-   datatype.sql - Tests added with all supported data types. 
-                  In test we create two tables in the format datatype_table_odd for storing the odd number 
-                  elements and datatype_table_even for storing the even number of elements. Then we query
-                  with SELECT MEDIAN(col) from table_name. This is to simulate the behaviour 
-                  of median() with odd/even number of elements.
+- **datatype.sql**  
+  Tests include all supported data types. For each data type, we create two tables, `datatype_table_odd` (odd number of elements) and `datatype_table_even` (even number of elements), and run `SELECT MEDIAN(col)` on each table to simulate median behavior.
 
-   datatype_large.sql - Test large data sets
-                        Purpose of these testcases are to force tuplesort* API to use external tape sort.
-                        We do this by inserting large data ( > 1 million rows)) and querying the median.
-   
-   numeric_noimplicit.sql: The purpose of this test case is to see whether SERVER TYPECASTs the result 
-                            to FLOAT data type when even number of elements present in the result set 
-                            and all elements are equal. In this test, elements present at N/2 and N/2 + 1
-                            position are equal, so server shouldn't perform implicit conversion.
-                            Example: CREATE TABLE TEST(COL1 INT);
-                                     INSERT INTO TEST VALUES (2),(2),(2),(2).
-                                     SELECT MEDIAN(COL1) FROM TEST
-                                     MEDIAN
-                                     -------
-                                       2 (NOT 2.0)
-    
-     numeric_mean.sql: The purpose of this test case is to see whether SERVER performs implcit conversion of the
-                      result to FLOAT data type, when even number of elements present in the result set and all 
-                      elements are equal. In this test, elements present at n/2 and n/2 + 1 position are equal, server
-                      should implcitly convert the result to FLOAT data type for data types
-                      INT, SMALL INT, LARGE INT, SERIAL, SMALL SERIAL and BIG SERIAL data types.   
-                      Example: CREATE TABLE TEST(COL1 INT);
-                               INSERT INTO TEST VALUES (1),(2),(3),(4).
-                               SELECT MEDIAN(COL1) FROM TEST
-                                MEDIAN
-                                -------
-                                  2.5 (NOT 2)
-                     Also this testcase checks for potential overflows when mean operation is performed.
-                     This we simulate by inserting 4 rows in below format for each data type.
-                       (random value)                                                              
-                       (close to MAX_VAL) --> n/2                                            
-                       (  MAX_VAL) --> n/2 + 1                                                
-                       ( MAX_VAL )  
-                    median = ((close to MAX_VAL) + MAX_VAL) / 2;
-                    
-      datetime_meam.sql: Test mean operation for interval/date/time/timestamp data types.
-      
+- **datatype_large.sql**  
+  Tests large datasets, ensuring `tuplesort*` API switches to external tape sort. We insert large data sets (>1 million rows) and query for the median.
+
+- **numeric_noimplicit.sql**  
+  Tests whether the server typecasts the result to `FLOAT` when there are even elements and all are equal. Here, elements at `n/2` and `n/2 + 1` are equal, so no implicit conversion should occur.
+    - **Example**:
+      ```sql
+      CREATE TABLE TEST (COL1 INT);
+      INSERT INTO TEST VALUES (2), (2), (2), (2);
+      SELECT MEDIAN(COL1) FROM TEST;
+      -- Expected Result: 2 (NOT 2.0)
+      ```
+
+- **numeric_mean.sql**  
+  Tests if the server performs implicit conversion to `FLOAT` for `INT`, `SMALLINT`, `BIGINT`, `SERIAL`, `SMALLSERIAL`, and `BIGSERIAL` data types when there are even elements, and elements at `n/2` and `n/2 + 1` are equal.
+    - **Example**:
+      ```sql
+      CREATE TABLE TEST (COL1 INT);
+      INSERT INTO TEST VALUES (1), (2), (3), (4);
+      SELECT MEDIAN(COL1) FROM TEST;
+      -- Expected Result: 2.5 (NOT 2)
+      ```
+  This also checks for potential overflows during mean calculation by inserting values as follows: \
+     - **Example**
+       ```sql
+       INSERT INTO integer_mean VALUES (123456789) --random value
+       INSERT INTO integer_mean VALUES (2147483646) -- MAX_VAL - 1
+       INSERT INTO integer_mean VALUES (2147483647) -- MAX_VAL                                                               
+       INSERT INTO integer_mean VALUES (2147483647) -- MAX_VAL
+    - **Median Calculation**: `(MAX_VAL - 1 + MAX_VAL) / 2`
+
+- **datetime_mean.sql**  
+  Tests the mean operation for `INTERVAL`, `DATE`, `TIME`, and `TIMESTAMP` data types.
 
 
 
