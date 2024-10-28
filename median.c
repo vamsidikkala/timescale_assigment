@@ -479,7 +479,7 @@ median_calculate_mean(MedianState * median_state, Datum val1, Datum val2)
 				half_diff = DirectFunctionCall2(interval_div, difference,
 												Float8GetDatum((double) 2));
 				mean = DirectFunctionCall2(timestamp_pl_interval, val1,
-										   half_diff);
+									       half_diff);
 				PG_RETURN_DATUM(mean);
 			}
 		case TIMESTAMPTZOID:
@@ -495,7 +495,7 @@ median_calculate_mean(MedianState * median_state, Datum val1, Datum val2)
 				half_diff = DirectFunctionCall2(interval_div, difference,
 												Float8GetDatum((double) 2));
 				mean = DirectFunctionCall2(timestamptz_pl_interval, val1,
-										   half_diff);
+                                           half_diff);
 				PG_RETURN_DATUM(mean);
 			}
 		default:
