@@ -8,6 +8,7 @@
 #include <utils/guc.h>
 #include <utils/numeric.h>
 #include "catalog/pg_type_d.h"
+#include <funcapi.h>
 
 #if PG_VERSION_NUM < 120000 || PG_VERSION_NUM >= 130000
 #error "Unsupported PostgreSQL version. Use version 12."
@@ -30,17 +31,18 @@ typedef struct
 	AggState   *agg_state;
 }			MedianState;
 
-MedianState *median_init_state(MemoryContext memoryCtx, Oid datum_type,
-							   Oid collation);
-Datum		median_calculate_mean(MedianState * median_state, Datum val1,
-								  Datum val2);
-Datum		median_calculate_median(MedianState * median_state);
+
+static MedianState *median_init_state(MemoryContext memoryCtx, Oid datum_type,
+							          Oid collation);
+static Datum	median_calculate_mean(MedianState * median_state, Datum val1,
+								      Datum val2);
+static Datum	median_calculate_median(MedianState * median_state);
 
 /*
-   Name: median_init_state()
-   Description: Initializes the median state
-*/
-MedianState *
+ * Name: median_init_state()
+ *  Description: Initializes the median state and begins tuplesort
+ */
+static MedianState *
 median_init_state(MemoryContext agg_context, Oid datum_type,
 				  Oid sort_collation_id)
 {
@@ -114,9 +116,7 @@ median_transfn(PG_FUNCTION_ARGS)
 		datum_type = get_fn_expr_argtype(fcinfo->flinfo, 1);
 
 		if (!OidIsValid(datum_type))
-		{
 			elog(ERROR, "median_transfn called with unknown datatype");
-		}
 
 		median_state = median_init_state(agg_context, datum_type,
 										 fcinfo->fncollation);
@@ -170,7 +170,7 @@ median_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(median);
 }
 
-Datum
+static Datum
 median_calculate_median(MedianState * median_state)
 {
 	int64		middle_element_idx = median_state->total_elements / 2;
@@ -220,22 +220,22 @@ median_calculate_median(MedianState * median_state)
 }
 
 /*
-    Name: median_calculate_mean()
-    Description: Given two middle datums, calculates and returns the mean.
-    Two cases to consider
-    1) Data types that support interpolation of two values
-       i) If n/2 and n/2 + 1 are equal, just return the n/2 element
-          Note: We will not override INT2OID, INT4OID and INT8OID attr types.
-      ii) If n/2 and n/2 + 1 are different, calcuate the mean and return the
-          mean.
-          Note: For data types INT2OID, INT4OID and INT8OID, attribute type will
-                be overrided with corresponding FLOAT data type. This hack
-                forces Server to send data in FLOAT format.
-    2) Data types that doesn't support interpoltion of two values.
-       Returns first middle element (n/2) as mean.
+ *   Name: median_calculate_mean()
+ *   Description: Given two middle datums, calculates and returns the mean.
+ *   Two cases to consider
+ *   1) Data types that support interpolation of two values
+ *      i) If n/2 and n/2 + 1 are equal, just return the n/2 element
+ *         Note: We will not override INT2OID, INT4OID and INT8OID attr types.
+ *     ii) If n/2 and n/2 + 1 are different, calcuate the mean and return the
+ *         mean.
+ *         Note: For data types INT2OID, INT4OID and INT8OID, attribute type will
+ *               be overrided with corresponding FLOAT data type. This hack
+ *               forces Server to send data in FLOAT format.
+ *   2) Data types that doesn't support interpoltion of two values.
+ *      Returns first middle element (n/2) as mean.
+ */
 
-*/
-Datum
+static Datum
 median_calculate_mean(MedianState * median_state, Datum val1, Datum val2)
 {
 
@@ -479,7 +479,7 @@ median_calculate_mean(MedianState * median_state, Datum val1, Datum val2)
 				half_diff = DirectFunctionCall2(interval_div, difference,
 												Float8GetDatum((double) 2));
 				mean = DirectFunctionCall2(timestamp_pl_interval, val1,
-									       half_diff);
+										   half_diff);
 				PG_RETURN_DATUM(mean);
 			}
 		case TIMESTAMPTZOID:
@@ -495,7 +495,7 @@ median_calculate_mean(MedianState * median_state, Datum val1, Datum val2)
 				half_diff = DirectFunctionCall2(interval_div, difference,
 												Float8GetDatum((double) 2));
 				mean = DirectFunctionCall2(timestamptz_pl_interval, val1,
-                                           half_diff);
+										   half_diff);
 				PG_RETURN_DATUM(mean);
 			}
 		default:
