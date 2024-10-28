@@ -43,7 +43,7 @@ tests should pass as is. Feel free to add additional tests.
 1. If the result set contains an odd number of elements, the median is the element at position `n/2` in the sorted set.
 2. If the result set contains an even number of elements:
     - **Data types that support mean calculation**  
-        - If the elements at positions `n/2` and `n/2 + 1` are same, return the element at `n/2` (no implicit conversion for NUMERIC data types).
+        - If the elements at position `n/2` and `n/2 + 1` are equal, return the element at `n/2` (no implicit conversion for NUMERIC data types).
         - If the elements are not equal, return the mean of the `n/2` and `n/2 + 1` elements (implicit conversion for NUMERIC data types).
     - **Data types that do not support mean calculation**  
         - Return the first middle element as the median.
