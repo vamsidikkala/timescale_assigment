@@ -65,13 +65,13 @@ After sorting, we use the steps in the "Calculating the Median" section to find 
 Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `BIGINT`, `SMALLSERIAL`, `SERIAL`, and `BIGSERIAL` when the result set contains an even number of elements and the elements at `n/2` and `n/2 + 1` are not equal. If both elements are the same, no implicit conversion should occur.
 
 ### Testing:
-- **datatype.sql**  
+- **datatype.sql(array.sql, bit.sql, byte.sql, boolean.sql, enum.sql etc)**  
   Tests include all supported data types. For each data type, we create two tables, `datatype_table_odd` (odd number of elements) and `datatype_table_even` (even number of elements), and run `SELECT MEDIAN(col)` on each table to simulate median behavior.
 
 - **geometric.sql**  
   Test unsupported datatype POINT and LINE with MEDIAN().
   
-- **datatype_large.sql**  
+- **datatype_large.sql(bigint_large.sql, big_serial_large.sql, decimal_large etc)**  
   Tests large datasets, ensuring `tuplesort*` API switches to external tape sort. We insert large data sets (>1 million rows) and query for the median.
 
 - **numeric_noimplicit.sql**  
