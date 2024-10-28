@@ -1,4 +1,6 @@
--- double precision
+-- Test double precision with large data 3 million rows
+-- (3 * 10^ 6 ) * 8 bytes ~ 24 MB
+
 DROP TABLE IF EXISTS double_precision_large_data;
 
 CREATE TABLE double_precision_large_data (

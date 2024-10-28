@@ -1,4 +1,5 @@
--- bigint
+-- Test bigint data type with huge data
+
 DROP TABLE IF EXISTS bigint_large_data;
 
 CREATE TABLE bigint_large_data (

@@ -1,18 +1,15 @@
--- BOOLEAN Data Type in PostgreSQL
--- 1. boolean
+-- Test BOOLEAN data type
 DROP TABLE IF EXISTS boolean_table_odd;
 NOTICE:  table "boolean_table_odd" does not exist, skipping
 DROP TABLE IF EXISTS boolean_table_even;
 NOTICE:  table "boolean_table_even" does not exist, skipping
 CREATE TABLE boolean_table_odd (id boolean);
 CREATE TABLE boolean_table_even (id boolean);
--- Insert 5 values into the odd table
 INSERT INTO boolean_table_odd VALUES (TRUE);
 INSERT INTO boolean_table_odd VALUES (FALSE);
 INSERT INTO boolean_table_odd VALUES (TRUE);
 INSERT INTO boolean_table_odd VALUES (FALSE);
 INSERT INTO boolean_table_odd VALUES (TRUE);
--- Insert 4 values into the even table
 INSERT INTO boolean_table_even VALUES (TRUE);
 INSERT INTO boolean_table_even VALUES (FALSE);
 INSERT INTO boolean_table_even VALUES (TRUE);

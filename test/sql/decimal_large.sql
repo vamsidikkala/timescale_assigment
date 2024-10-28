@@ -1,4 +1,6 @@
--- decimal
+-- Check whether external tape sort can handle large data or not
+-- Test decimal data type with huge date 1.5 million rows 
+
 DROP TABLE IF EXISTS decimal_large_data;
 
 CREATE TABLE decimal_large_data (

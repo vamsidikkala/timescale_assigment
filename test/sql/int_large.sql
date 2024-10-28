@@ -1,4 +1,6 @@
--- integer
+-- integer with large data, test to veriify whether exteranl sorting kicks-in
+-- or not.
+
 DROP TABLE IF EXISTS integer_large_data;
 
 CREATE TABLE integer_large_data (

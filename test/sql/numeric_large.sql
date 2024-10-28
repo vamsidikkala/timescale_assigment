@@ -1,4 +1,5 @@
--- numeric
+-- Test large date with numeric datatype (1.5 million rows)
+
 DROP TABLE IF EXISTS numeric_large_data;
 
 CREATE TABLE numeric_large_data (

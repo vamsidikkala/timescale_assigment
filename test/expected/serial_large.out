@@ -1,4 +1,4 @@
--- serial
+-- Test case to verify large data set of serial data type
 DROP TABLE IF EXISTS serial_large_data;
 NOTICE:  table "serial_large_data" does not exist, skipping
 CREATE TABLE serial_large_data (

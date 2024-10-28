@@ -1,4 +1,4 @@
--- real
+-- Test case to verify large data set of type REAL 
 DROP TABLE IF EXISTS real_large_data;
 
 CREATE TABLE real_large_data (

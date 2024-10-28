@@ -1,3 +1,5 @@
+-- Test Composite data type
+
 CREATE TYPE complex AS (
     r       double precision,
     i       double precision

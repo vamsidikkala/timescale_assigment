@@ -1,20 +1,17 @@
--- ARRAY Data Type in PostgreSQL
+-- ARRAY data type 
 
--- 1. ARRAY
 DROP TABLE IF EXISTS array_table_odd;
 DROP TABLE IF EXISTS array_table_even;
 
 CREATE TABLE array_table_odd (id INT[]);
 CREATE TABLE array_table_even (id INT[]);
 
--- Insert 5 values into the odd table using sample array values
 INSERT INTO array_table_odd VALUES (ARRAY[1, 2, 3]);
 INSERT INTO array_table_odd VALUES (ARRAY[4, 5, 6]);
 INSERT INTO array_table_odd VALUES (ARRAY[7, 8, 9]);
 INSERT INTO array_table_odd VALUES (ARRAY[10, 11, 12]);
 INSERT INTO array_table_odd VALUES (ARRAY[13, 14, 15]);
 
--- Insert 4 values into the even table using sample array values
 INSERT INTO array_table_even VALUES (ARRAY[16, 17, 18, 19]);
 INSERT INTO array_table_even VALUES (ARRAY[20, 21, 22, 23]);
 INSERT INTO array_table_even VALUES (ARRAY[24, 25, 26, 27]);

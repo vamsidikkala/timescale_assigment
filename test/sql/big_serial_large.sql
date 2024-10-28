@@ -1,4 +1,5 @@
--- bigserial
+-- Test bigserial data type with huge data
+
 DROP TABLE IF EXISTS bigserial_large_data;
 
 CREATE TABLE bigserial_large_data (
