@@ -49,7 +49,7 @@ tests should pass as is. Feel free to add additional tests.
         - Return the first middle element as the median.
 
 ### Algorithm:
-The `tuplesort_*` interface is used for sorting the data, switching to an external tape sort when the result set size exceeds the `work_mem` parameter.\
+The `tuplesort_*` interface is used for sorting the data, switches to an external tape sort when the result set size exceeds the `work_mem` parameter.\
 After sorting, we use the steps in the "Calculating the Median" section to find the median.
 
 ### Data Type Support:
