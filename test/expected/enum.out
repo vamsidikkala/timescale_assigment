@@ -43,6 +43,14 @@ SELECT * FROM enum_table_even ORDER BY id;
 
 -- Median calculation
 SELECT median(id) AS median_value FROM enum_table_odd;
-ERROR:  median feature is not supported with data type: mood_type
+ median_value 
+--------------
+ sad
+(1 row)
+
 SELECT median(id) AS median_value FROM enum_table_even;
-ERROR:  median feature is not supported with data type: mood_type
+ median_value 
+--------------
+ happy
+(1 row)
+

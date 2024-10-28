@@ -1,0 +1,4 @@
+median.o
+median.so
+test/regression.*
+*.tar.gz
