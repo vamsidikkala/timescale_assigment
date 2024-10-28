@@ -105,5 +105,10 @@ Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `
 - **datetime_mean.sql**  
   Tests the mean operation for `INTERVAL`, `DATE`, `TIME`, and `TIMESTAMP` data types.
 
+- **numeric_null.sql**  
+  Test the NULL result-set. All column values are NULLs.
+  
+- **numeric_empty.sql**  
+  Query empty table and see whether median() fails.
 
-
+  
