@@ -1,0 +1,58 @@
+-- Drop tables if they exist
+DROP TABLE IF EXISTS oid_table_odd;
+NOTICE:  table "oid_table_odd" does not exist, skipping
+DROP TABLE IF EXISTS oid_table_even;
+NOTICE:  table "oid_table_even" does not exist, skipping
+-- Create tables for odd and even row counts using the oid data type
+CREATE TABLE oid_table_odd (
+    id SERIAL PRIMARY KEY,
+    value_column oid
+);
+-- Insert odd number of rows into oid_table_odd
+INSERT INTO oid_table_odd (value_column) VALUES
+(1001),
+(1002),
+(1003);  -- Continue to add odd number of rows
+-- Select data ordered by id for oid_table_odd
+SELECT * FROM oid_table_odd ORDER BY id;
+ id | value_column 
+----+--------------
+  1 |         1001
+  2 |         1002
+  3 |         1003
+(3 rows)
+
+-- Calculate the median for oid_table_odd
+SELECT median(value_column) FROM oid_table_odd;
+ median 
+--------
+   1002
+(1 row)
+
+CREATE TABLE oid_table_even (
+    id SERIAL PRIMARY KEY,
+    value_column oid
+);
+-- Insert even number of rows into oid_table_even
+INSERT INTO oid_table_even (value_column) VALUES
+(1004),
+(1005),
+(1006),
+(1007);  -- Continue to add even number of rows
+-- Select data ordered by id for oid_table_even
+SELECT * FROM oid_table_even ORDER BY id;
+ id | value_column 
+----+--------------
+  1 |         1004
+  2 |         1005
+  3 |         1006
+  4 |         1007
+(4 rows)
+
+-- Calculate the median for oid_table_even
+SELECT median(value_column) FROM oid_table_even;
+ median 
+--------
+   1005
+(1 row)
+
