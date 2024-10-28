@@ -32,11 +32,11 @@ typedef struct
 }			MedianState;
 
 
-static MedianState *median_init_state(MemoryContext memoryCtx, Oid datum_type,
-							          Oid collation);
-static Datum	median_calculate_mean(MedianState * median_state, Datum val1,
-								      Datum val2);
-static Datum	median_calculate_median(MedianState * median_state);
+static MedianState * median_init_state(MemoryContext memoryCtx, Oid datum_type,
+									   Oid collation);
+static Datum median_calculate_mean(MedianState * median_state, Datum val1,
+								   Datum val2);
+static Datum median_calculate_median(MedianState * median_state);
 
 /*
  * Name: median_init_state()
@@ -421,17 +421,17 @@ median_calculate_mean(MedianState * median_state, Datum val1, Datum val2)
 			{
 
 				Datum		difference,
-							half_difference,
+							half_diff,
 							mean;
 
 				if (DirectFunctionCall2(time_eq, val1, val2))
 					PG_RETURN_DATUM(val1);
 
 				difference = DirectFunctionCall2(time_mi_time, val2, val1);
-				half_difference = DirectFunctionCall2(interval_div, difference,
-													  Float8GetDatum((double) 2));
+				half_diff = DirectFunctionCall2(interval_div, difference,
+												Float8GetDatum((double) 2));
 				mean = DirectFunctionCall2(time_pl_interval, val1,
-										   half_difference);
+										   half_diff);
 				PG_RETURN_DATUM(mean);
 			}
 		case INTERVALOID:
