@@ -8,7 +8,7 @@ REGRESS := median array bit boolean byte char datetime enum inet monetary \
            numeric_mean datetime_mean int_large bigint_large \
            serial_large big_serial_large decimal_large numeric_large \
            real_large double_large geometric composite intrange domain oid \
-           lsn numeric_empty numeric_null 
+           lsn numeric_empty numeric_null sort_collation 
              
 PG_USER = postgres
 REGRESS_OPTS := \

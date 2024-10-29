@@ -33,7 +33,7 @@ CREATE TABLE domain_table_even (
 INSERT INTO domain_table_even (value_column) VALUES
 (2),
 (4),
-(6),
+(7),
 (8);
 
 SELECT * FROM domain_table_even ORDER BY id;

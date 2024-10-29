@@ -9,6 +9,7 @@
 #include <utils/numeric.h>
 #include "catalog/pg_type_d.h"
 #include <funcapi.h>
+#include "utils/typcache.h"
 
 #if PG_VERSION_NUM < 120000 || PG_VERSION_NUM >= 130000
 #error "Unsupported PostgreSQL version. Use version 12."
@@ -18,15 +19,16 @@
 PG_MODULE_MAGIC;
 #endif
 
+
 PG_FUNCTION_INFO_V1(median_transfn);
 
 typedef struct
 {
-	Oid			datum_type;
-	Oid			sort_collation_id;
-	Oid			sort_operator;
-	int32		work_mem;
-	int64		total_elements;
+	Oid			datum_type;		/* Element type */
+	Oid			sort_collation_id;	/* Language collation */
+	Oid			sort_operator;	/* sort operator, "<" */
+	int32		work_mem;		/* max amount of memory for sort operation */
+	int64		total_elem;		/* total number of elements in result-set */
 	Tuplesortstate *sortstate;
 	AggState   *agg_state;
 }			MedianState;
@@ -85,7 +87,7 @@ median_init_state(MemoryContext agg_context, Oid datum_type,
 								median_state->sort_collation_id,
 								false, median_state->work_mem,
 								NULL, true);
-	median_state->total_elements = 0;
+	median_state->total_elem = 0;
 
 	MemoryContextSwitchTo(prev_context);
 
@@ -130,7 +132,7 @@ median_transfn(PG_FUNCTION_ARGS)
 	tuplesort_putdatum(median_state->sortstate, PG_GETARG_DATUM(1),
 					   PG_ARGISNULL(1));
 
-	median_state->total_elements++;
+	median_state->total_elem++;
 
 finally:
 	PG_RETURN_POINTER(median_state);
@@ -158,7 +160,7 @@ median_finalfn(PG_FUNCTION_ARGS)
 	median_state =
 		(MedianState *) (PG_ARGISNULL(0) ? NULL : PG_GETARG_POINTER(0));
 
-	if (median_state == NULL || median_state->total_elements == 0)
+	if (median_state == NULL || median_state->total_elem == 0)
 		PG_RETURN_NULL();
 
 	tuplesort_performsort(median_state->sortstate);
@@ -173,16 +175,16 @@ median_finalfn(PG_FUNCTION_ARGS)
 static Datum
 median_calculate_median(MedianState * median_state)
 {
-	int64		middle_element_idx = median_state->total_elements / 2;
+	int64		mid_elem_idx = median_state->total_elem / 2;
 	Datum		median;
 	bool		isNull;
 
-	if (median_state->total_elements % 2 == 1)
+	if (median_state->total_elem % 2 == 1)
 	{
 
 		/* skip floor(n/2) elements */
 		if (!tuplesort_skiptuples(median_state->sortstate,
-								  middle_element_idx, true))
+								  mid_elem_idx, true))
 			elog(ERROR, "missing row in median_finalfn");
 
 		/* Null is not expected, so we don't check for nulls */
@@ -198,7 +200,7 @@ median_calculate_median(MedianState * median_state)
 
 		/* Skip first n/2 - 1 elements */
 		if (!tuplesort_skiptuples(median_state->sortstate,
-								  middle_element_idx - 1, true))
+								  mid_elem_idx - 1, true))
 			elog(ERROR, "missing row in median_finalfn");
 
 		/* Null is not expected, so we don't check for nulls */
@@ -241,11 +243,22 @@ median_calculate_mean(MedianState * median_state, Datum val1, Datum val2)
 
 	TupleDesc	tuple_desc;
 	Form_pg_attribute attr;
+	Oid			baseType = median_state->datum_type;
+	TypeCacheEntry *typentry;
 
 	tuple_desc = median_state->agg_state->ss.ps.ps_ResultTupleDesc;
 	attr = TupleDescAttr(tuple_desc, 0);
 
-	switch (median_state->datum_type)
+	/* Get the base type for DOMAIN data type */
+
+	typentry = lookup_type_cache(baseType, TYPECACHE_DOMAIN_BASE_INFO);
+	if (typentry->typtype == TYPTYPE_DOMAIN)
+	{
+		if (!OidIsValid(typentry->domainBaseType))
+			elog(ERROR, "median_finalfn called with unknown datatype");
+		baseType = typentry->domainBaseType;
+	}
+	switch (baseType)
 	{
 		case INT2OID:
 			{

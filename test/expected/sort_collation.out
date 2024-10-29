@@ -1,0 +1,88 @@
+-- test sort collation. Each language has different set of rules for sorting 
+--  the data. So check MEDIAN() is able to handle the data in different 
+--  language other than the default language.
+DROP TABLE IF EXISTS japanese_employee_odd;
+NOTICE:  table "japanese_employee_odd" does not exist, skipping
+CREATE TABLE japanese_employee_odd (
+    employee_id SERIAL PRIMARY KEY,
+    employee_name VARCHAR(50),
+    position TEXT
+);
+INSERT INTO japanese_employee_odd (employee_name, position) VALUES 
+    ('田中一郎', 'エンジニア'),
+    ('斎藤二郎', 'マーケティングマネージャー'),
+    ('小林優子', 'プロダクトマネージャー');
+SELECT employee_name FROM japanese_employee_odd order by employee_name;
+ employee_name 
+---------------
+ 小林優子
+ 斎藤二郎
+ 田中一郎
+(3 rows)
+
+SELECT median(employee_name) from japanese_employee_odd;
+  median  
+----------
+ 斎藤二郎
+(1 row)
+
+SELECT position FROM japanese_employee_odd order by position;
+          position          
+----------------------------
+ エンジニア
+ プロダクトマネージャー
+ マーケティングマネージャー
+(3 rows)
+
+SELECT median(position) from japanese_employee_odd;
+         median         
+------------------------
+ プロダクトマネージャー
+(1 row)
+
+DROP TABLE IF EXISTS japanese_employee_even;
+NOTICE:  table "japanese_employee_even" does not exist, skipping
+CREATE TABLE japanese_employee_even (
+    employee_id SERIAL PRIMARY KEY,
+    employee_name VARCHAR(50),
+    position TEXT
+);
+INSERT INTO japanese_employee_even (employee_name, position) VALUES 
+    ('田中一郎', 'エンジニア'),
+    ('高橋花子', 'デザイナー'),
+    ('斎藤二郎', 'マーケティングマネージャー'),
+    ('小林優子', 'プロダクトマネージャー');
+SELECT employee_name FROM japanese_employee_even order by employee_name;         
+ employee_name 
+---------------
+ 小林優子
+ 斎藤二郎
+ 田中一郎
+ 高橋花子
+(4 rows)
+
+                                                                                
+SELECT median(employee_name) from japanese_employee_even;                        
+  median  
+----------
+ 斎藤二郎
+(1 row)
+
+                                                                                
+                                                                                
+SELECT position FROM japanese_employee_even order by position;                   
+          position          
+----------------------------
+ エンジニア
+ デザイナー
+ プロダクトマネージャー
+ マーケティングマネージャー
+(4 rows)
+
+                                                                                
+SELECT median(position) from japanese_employee_even;
+   median   
+------------
+ デザイナー
+(1 row)
+

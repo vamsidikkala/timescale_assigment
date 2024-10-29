@@ -39,20 +39,20 @@ CREATE TABLE domain_table_even (
 INSERT INTO domain_table_even (value_column) VALUES
 (2),
 (4),
-(6),
+(7),
 (8);
 SELECT * FROM domain_table_even ORDER BY id;
  id | value_column 
 ----+--------------
   1 |            2
   2 |            4
-  3 |            6
+  3 |            7
   4 |            8
 (4 rows)
 
 SELECT median(value_column) FROM domain_table_even;
  median 
 --------
-      4
+    5.5
 (1 row)
 
