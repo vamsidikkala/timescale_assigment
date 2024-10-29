@@ -130,5 +130,5 @@ For DOMAIN datatypes, we get the base type and median is calcuated on the base t
   So test MEDIAN() handles different charset or not.    
 
 ## Not implemented
-  Rolling Median \
+   Moving aggregate \
   Parallel Aggregate
