@@ -73,14 +73,8 @@ Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `
   
 - **datatype_large.sql**  
   Tests large datasets, ensuring `tuplesort*` API switches to external tape sort. We insert large data sets (>1 million rows) and query for the median.\
-  bigint_large.sql - 1.5 million rows
-  big_serial_large.sql
-  decimal_large.sql
-  int_large.sql
-  numeric_large.sql
-  real_large.sql
-  serial_large.sql
-  double_large.sql - 3 million rows
+  1.5 million rows : bigint_large.sql big_serial_large.sql decimal_large.sql int_large.sql numeric_large.sql real_large.sql serial_large.sql \
+    3 million rows : double_large.sql 
 
 - **numeric_noimplicit.sql**  
   Tests whether the server typecasts the result to `FLOAT` when there are even number of elements in the result and all are equal. Here, elements at `n/2` and `n/2 + 1` are equal, so no implicit conversion should occur.
