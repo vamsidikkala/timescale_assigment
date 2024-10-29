@@ -40,6 +40,8 @@ static Datum median_calculate_mean(MedianState * median_state, Datum val1,
 								   Datum val2);
 static Datum median_calculate_median(MedianState * median_state);
 
+static Oid	median_get_basetype(Oid attr_type);
+
 /*
  * Name: median_init_state()
  *  Description: Initializes the median state and begins tuplesort
@@ -220,6 +222,38 @@ median_calculate_median(MedianState * median_state)
 	return median;
 }
 
+/*
+ * Name: median_get_basetype()
+   Description: Gets the base type associated with Domain type, can be extended
+                to Object Identifier type also.
+
+*/
+
+static Oid
+median_get_basetype(Oid attr_type)
+{
+
+	/* Get the base type for DOMAIN data type */
+
+	TypeCacheEntry *typentry;
+
+	typentry = lookup_type_cache(attr_type, TYPECACHE_DOMAIN_BASE_INFO);
+
+	switch (typentry->typtype)
+	{
+		case TYPTYPE_DOMAIN:
+			{
+				if (!OidIsValid(typentry->domainBaseType))
+					elog(ERROR, "median_finalfn invalid base type for DOMAIN");
+				attr_type = typentry->domainBaseType;
+				break;
+			}
+		default:
+			/* Do nothing */
+	}
+	return attr_type;
+}
+
 
 /*
  *   Name: median_calculate_mean()
@@ -243,21 +277,11 @@ median_calculate_mean(MedianState * median_state, Datum val1, Datum val2)
 
 	TupleDesc	tuple_desc;
 	Form_pg_attribute attr;
-	Oid			baseType = median_state->datum_type;
-	TypeCacheEntry *typentry;
+	Oid			baseType = median_get_basetype(median_state->datum_type);
 
 	tuple_desc = median_state->agg_state->ss.ps.ps_ResultTupleDesc;
 	attr = TupleDescAttr(tuple_desc, 0);
 
-	/* Get the base type for DOMAIN data type */
-
-	typentry = lookup_type_cache(baseType, TYPECACHE_DOMAIN_BASE_INFO);
-	if (typentry->typtype == TYPTYPE_DOMAIN)
-	{
-		if (!OidIsValid(typentry->domainBaseType))
-			elog(ERROR, "median_finalfn called with unknown datatype");
-		baseType = typentry->domainBaseType;
-	}
 	switch (baseType)
 	{
 		case INT2OID:
