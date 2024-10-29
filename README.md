@@ -55,7 +55,7 @@ After sorting, we use the steps in the "Calculating the Median" section to find 
    i) if data size crosses work_mem size, tuplesort_ uses in-memory sort to sort the current chunk, and writes current chunk into the tape.
 2) In median_finalfn() use tuplesort_performsort() to sort the final run. \
    i) If result-set fits completely in the memory, uses in-memory sorting algorithm to sort the result-set.\
-   ii) If step 1 writes sorted run to the tape, this step merges all sorted runs using prirotiy queue(sort merged lists)
+   ii) If step 1 writes sorted run to the tape, this step merges all sorted runs using prirotiy queue(merge sort lists)
 3) Depends on the result set size (odd or even), we calcuate the median.
 
 ### Data Type Support:
