@@ -221,6 +221,7 @@ median_calculate_median(MedianState * median_state)
 	return median;
 }
 
+
 /*
  *   Name: median_calculate_mean()
  *   Description: Given two middle datums, calculates and returns the mean.
