@@ -129,4 +129,6 @@ For DOMAIN datatypes, we get the base type and median is calcuated on the base t
   Test sort collation with JAPANESE text. Each langugage has different set of rules for sort ordering.\
   So test MEDIAN() handles different charset or not.    
 
-  
+## Not implemented
+  Rolling Median \
+  Parallel Aggregate
