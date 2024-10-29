@@ -71,8 +71,16 @@ Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `
 - **geometric.sql**  
   Test unsupported datatype POINT and LINE with MEDIAN().
   
-- **datatype_large.sql(bigint_large.sql, big_serial_large.sql, decimal_large etc)**  
-  Tests large datasets, ensuring `tuplesort*` API switches to external tape sort. We insert large data sets (>1 million rows) and query for the median.
+- **datatype_large.sql**  
+  Tests large datasets, ensuring `tuplesort*` API switches to external tape sort. We insert large data sets (>1 million rows) and query for the median.\
+  bigint_large.sql - 1.5 million rows
+  big_serial_large.sql
+  decimal_large.sql
+  int_large.sql
+  numeric_large.sql
+  real_large.sql
+  serial_large.sql
+  double_large.sql - 3 million rows
 
 - **numeric_noimplicit.sql**  
   Tests whether the server typecasts the result to `FLOAT` when there are even number of elements in the result and all are equal. Here, elements at `n/2` and `n/2 + 1` are equal, so no implicit conversion should occur.
@@ -100,7 +108,7 @@ Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `
        INSERT INTO integer_mean VALUES (2147483646) -- MAX_VAL - 1
        INSERT INTO integer_mean VALUES (2147483647) -- MAX_VAL                                                               
        INSERT INTO integer_mean VALUES (2147483647) -- MAX_VAL
-    - **Median Calculation**: `(MAX_VAL - 1 + MAX_VAL) / 2`
+    - **Median Calculation**: `(MAX_VAL - 1 + MAX_VAL) / 2` --Check for overflow here
 
 - **datetime_mean.sql**  
   Tests the mean operation for `INTERVAL`, `DATE`, `TIME`, and `TIMESTAMP` data types.
