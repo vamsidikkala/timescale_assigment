@@ -50,7 +50,6 @@ median_init_state(MemoryContext agg_context, Oid datum_type,
 {
 	MedianState *median_state = NULL;
 	Oid			sort_op;
-	bool		is_hashable;
 	MemoryContext prev_context;
 	const char *work_mem_str;
 
@@ -74,7 +73,7 @@ median_init_state(MemoryContext agg_context, Oid datum_type,
 	 * get_sort_group_operators() call to throw exception.
 	 */
 	get_sort_group_operators(datum_type, true, false, false, &sort_op, NULL,
-							 NULL, &is_hashable);
+							 NULL, NULL);
 
 	median_state->sort_operator = sort_op;
 
