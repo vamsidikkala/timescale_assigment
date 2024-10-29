@@ -7,9 +7,9 @@
 #include <parser/parse_oper.h>
 #include <utils/guc.h>
 #include <utils/numeric.h>
-#include "catalog/pg_type_d.h"
+#include <catalog/pg_type_d.h>
 #include <funcapi.h>
-#include "utils/typcache.h"
+#include <utils/typcache.h>
 
 #if PG_VERSION_NUM < 120000 || PG_VERSION_NUM >= 130000
 #error "Unsupported PostgreSQL version. Use version 12."
