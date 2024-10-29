@@ -55,11 +55,11 @@ After sorting, we use the steps in the "Calculating the Median" section to find 
 ### Data Type Support:
 #### Supported Data Types
 - All data types that support the `ORDER BY` functionality.
-- For DOMAIN and Object Identifier data types, we are not actually looking into the actual data type \
-  they are pointing to. Instead we return first middle element in the even number result set.
+- For Object Identifier data type, we are not actually looking into the actual data type \
+  it is pointing to. Instead we return first middle element in the even number result set.
 
 #### Unsupported Data Types
-- XML, JSON, and Geometric types.
+- XML, JSON, and Geometric types. (All data types that are not supported with ORDER BY clause)
 
 ### Implicit Conversion:
 Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `BIGINT`, `SMALLSERIAL`, `SERIAL`, and `BIGSERIAL` when the result set contains an even number of elements and the elements at `n/2` and `n/2 + 1` are not equal. If both elements are the same, no implicit conversion should occur.
@@ -110,5 +110,14 @@ Implicit conversion to the `FLOAT` data type will occur for `SMALLINT`, `INT`, `
   
 - **numeric_empty.sql**  
   Query empty table and see whether median() fails.
+  
+- **domain.sql**  
+  Test domain data type. Also check whether median is calculated on the **base type** domain pointng to. To test this\
+  we insert even number of elements in the domain table, and calcuate the median. Since base type is INT, returned result \
+  should be implictly converted to FLOAT.
+  
+- **sort_collation.sql**  
+  Test sort collation with JAPANESE text. Each langugage has different set of rules for sort ordering.\
+  So test MEDIAN() handles different charset or not.    
 
   
