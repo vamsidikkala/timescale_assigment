@@ -123,9 +123,7 @@ For DOMAIN datatypes, we get the base type and median is calcuated on the base t
   Query empty table and see whether median() fails.
   
 - **domain.sql**  
-  Test domain data type. Also check whether median is calculated on the **base type** domain pointng to. To test this\
-  we insert even number of elements in the domain table, and calcuate the median. Since base type is INT, returned result \
-  should be implictly converted to FLOAT.
+  Test domain data type. Also check whether median is calculated on the **base type** domain pointng to. To test this we insert even number of elements in the domain table, and calcuate the median. Since base type is INT, returned result should be implictly converted to FLOAT.
   
 - **sort_collation.sql**  
   Test sort collation with JAPANESE text. Each langugage has different set of rules for sort ordering.\
