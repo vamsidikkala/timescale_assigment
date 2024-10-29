@@ -52,7 +52,7 @@ tests should pass as is. Feel free to add additional tests.
 The `tuplesort_*` interface is used for sorting the data, switches to an external tape sort when the result set size exceeds the `work_mem` parameter.\
 After sorting, we use the steps in the "Calculating the Median" section to find the median.
 1) As we scan through the list insert Datum into sort state object using tuplesort_putdatum()\
-   i) if data size crosses work_mem size, tuplesort_ uses in-memory sort to sort the current chunk, and writes current chunk into the tape.
+   i) if data size crosses work_mem size, tuplesort_ uses in-memory sorting algorithm to sort the current chunk, and writes partial chunk into the tape.
 2) In median_finalfn() use tuplesort_performsort() to sort the final run. \
    i) If result-set fits completely in the memory, uses in-memory sorting algorithm to sort the result-set.\
    ii) If step 1 writes sorted run to the tape, this step merges all sorted runs using prirotiy queue(merge sort lists)
