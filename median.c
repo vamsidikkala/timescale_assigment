@@ -58,14 +58,6 @@ median_init_state(MemoryContext agg_context, AggState *agg_state,
 	MemoryContext prev_context;
 	const char *work_mem_str;
 
-	prev_context = MemoryContextSwitchTo(agg_context);
-
-	median_state = MemoryContextAllocZero(agg_context, sizeof(MedianState));
-
-	median_state->datum_type = datum_type;
-
-	median_state->sort_collation_id = sort_collation_id;
-
 	/*
 	 * Data types that are not supported with ORDER BY clause, are also not
 	 * supported with MEDIAN() aggregate function.
@@ -77,8 +69,18 @@ median_init_state(MemoryContext agg_context, AggState *agg_state,
 	 * SORT elements of this data type. So we will let
 	 * get_sort_group_operators() call to throw exception.
 	 */
+
 	get_sort_group_operators(datum_type, true, false, false, &sort_op, NULL,
 							 NULL, NULL);
+
+
+	prev_context = MemoryContextSwitchTo(agg_context);
+
+	median_state = MemoryContextAllocZero(agg_context, sizeof(MedianState));
+
+	median_state->datum_type = datum_type;
+
+	median_state->sort_collation_id = sort_collation_id;
 
 	median_state->sort_operator = sort_op;
 
