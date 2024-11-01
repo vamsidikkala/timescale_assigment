@@ -1,10 +1,6 @@
 -- Test Geometric Point and LINE data type
--- This is negative test and we are supposed to get the error if result 
--- set contains atleast one element.
--- If result contains empty set, then no error is returned and empty row is 
--- returned. This is because, if result set doesn't contain any data the 
--- median_transfn is not called, and not possible to get the data type in 
--- median_finalfn. So we are returning empty result set.
+-- This is negative test and we are supposed to get the error unsupported
+-- Data type.
 
 
 -- 1. point

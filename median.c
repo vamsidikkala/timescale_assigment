@@ -33,22 +33,25 @@ typedef struct
 	AggState   *agg_state;
 }			MedianState;
 
+static MedianState *
+median_init_state(MemoryContext agg_context, AggState *agg_state,
+				  Oid datum_type, Oid sort_collation_id);
 
-static MedianState * median_init_state(MemoryContext memoryCtx, Oid datum_type,
-									   Oid collation);
 static Datum median_calculate_mean(MedianState * median_state, Datum val1,
 								   Datum val2);
 static Datum median_calculate_median(MedianState * median_state);
 
 static Oid	median_get_basetype(Oid attr_type);
 
+static void median_is_unsupported_datatype(Oid attr_type);
+
 /*
  * Name: median_init_state()
- *  Description: Initializes the median state and begins tuplesort
+ * Description: Initializes the median state and begins tuplesort
  */
 static MedianState *
-median_init_state(MemoryContext agg_context, Oid datum_type,
-				  Oid sort_collation_id)
+median_init_state(MemoryContext agg_context, AggState *agg_state,
+				  Oid datum_type, Oid sort_collation_id)
 {
 	MedianState *median_state = NULL;
 	Oid			sort_op;
@@ -89,6 +92,7 @@ median_init_state(MemoryContext agg_context, Oid datum_type,
 								false, median_state->work_mem,
 								NULL, true);
 	median_state->total_elem = 0;
+	median_state->agg_state = agg_state;
 
 	MemoryContextSwitchTo(prev_context);
 
@@ -121,12 +125,14 @@ median_transfn(PG_FUNCTION_ARGS)
 		if (!OidIsValid(datum_type))
 			elog(ERROR, "median_transfn called with unknown datatype");
 
-		median_state = median_init_state(agg_context, datum_type,
+		median_state = median_init_state(agg_context,
+										 (AggState *) fcinfo->context,
+										 datum_type,
 										 fcinfo->fncollation);
-		median_state->agg_state = (AggState *) fcinfo->context;
 
 	}
 
+	/* Don't consider NULL values in the result set */
 	if (PG_ARGISNULL(1))
 		goto finally;
 
@@ -154,12 +160,26 @@ median_finalfn(PG_FUNCTION_ARGS)
 	MemoryContext agg_context;
 	MedianState *median_state = NULL;
 	Datum		median;
+	Oid			datum_type;
 
 	if (!AggCheckCallContext(fcinfo, &agg_context))
 		elog(ERROR, "median_finalfn called in non-aggregate context");
 
+	datum_type = get_fn_expr_argtype(fcinfo->flinfo, 1);
+
 	median_state =
 		(MedianState *) (PG_ARGISNULL(0) ? NULL : PG_GETARG_POINTER(0));
+
+
+	/*
+	 * We rely on get_sort_group_operators() call to check for unsupported
+	 * data types. This call is part of median_state object initalization. If
+	 * result-set is empty, median_state object will not be initlaized. So
+	 * here we will check whether we are dealing with unsupported data types
+	 * or not incase of empty result set.
+	 */
+	if (median_state == NULL)
+		median_is_unsupported_datatype(datum_type);
 
 	if (median_state == NULL || median_state->total_elem == 0)
 		PG_RETURN_NULL();
@@ -173,6 +193,10 @@ median_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(median);
 }
 
+/*
+ * Name: median_calculate_median()
+ * Description: Given a sorted result-set calculates and returns the median.
+ */
 static Datum
 median_calculate_median(MedianState * median_state)
 {
@@ -224,10 +248,9 @@ median_calculate_median(MedianState * median_state)
 
 /*
  * Name: median_get_basetype()
-   Description: Gets the base type associated with Domain type, can be extended
-                to Object Identifier type also.
-
-*/
+ * Description: Gets the base type associated with Domain type, can be extended
+ *              to Object Identifier type also.
+ */
 
 static Oid
 median_get_basetype(Oid attr_type)
@@ -256,6 +279,36 @@ median_get_basetype(Oid attr_type)
 
 
 /*
+ * Name:        median_is_unsupported_datatype()
+ *
+ * Description: Given attribute type, check whether median() operation
+ *              is supported or not.
+ *
+ * Notes:       To determine if the median() operation is supported for a given
+ *              attribute type, we check whether the provided attribute type
+ *              has a valid less than operator associated with it for
+ *              comparision.
+*/
+static void
+median_is_unsupported_datatype(Oid attr_type)
+{
+	TypeCacheEntry *typentry;
+	Oid			lt_opr;
+
+	typentry = lookup_type_cache(attr_type, TYPECACHE_LT_OPR);
+
+	lt_opr = typentry->lt_opr;
+
+	/* Raise error if there is no valid less than operator for the data type */
+	if (!OidIsValid(lt_opr))
+		ereport(ERROR,
+				(errcode(ERRCODE_UNDEFINED_FUNCTION),
+				 errmsg("could not identify an ordering operator for type %s",
+						format_type_be(attr_type)),
+				 errhint("Use an explicit ordering operator or modify the query.")));
+}
+
+/*
  *   Name: median_calculate_mean()
  *   Description: Given two middle datums, calculates and returns the mean.
  *   Two cases to consider
@@ -264,9 +317,9 @@ median_get_basetype(Oid attr_type)
  *         Note: We will not override INT2OID, INT4OID and INT8OID attr types.
  *     ii) If n/2 and n/2 + 1 are different, calcuate the mean and return the
  *         mean.
- *         Note: For data types INT2OID, INT4OID and INT8OID, attribute type will
- *               be overrided with corresponding FLOAT data type. This hack
- *               forces Server to send data in FLOAT format.
+ *         Note: For data types INT2OID, INT4OID and INT8OID, attribute type
+ *               will be overrided with corresponding FLOAT data type. This hack
+ *               forces Server to implcitly convert the result to FLOAT format.
  *   2) Data types that doesn't support interpoltion of two values.
  *      Returns first middle element (n/2) as mean.
  */
